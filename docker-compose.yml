@@ -22,28 +22,29 @@ services:
             ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
             ME_CONFIG_BASICAUTH_USERNAME: user
             ME_CONFIG_BASICAUTH_PASSWORD: user
-    api:
-        container_name: api
+    server:
+        container_name: server 
         command: python -m flask run -h 0.0.0.0
         environment:
             - FLASK_DEBUG=1
         build:
-            context: ./api
-            dockerfile: Dockerfile
+            context: ./server
+            dockerfile: Dockerfile.dev
         restart: unless-stopped
         ports:
-            - 12005:5000
+            - 5001:5000
         volumes:
-            - ./api:/api
+            - ./server:/server
             - /etc/localtime:/etc/localtime
 
-    app:
+    client:
         restart: always
-        command: npm start
-        container_name: app
+        container_name: client
         build: 
-            context: ./app
-            dockerfile: Dockerfile
+            context: ./client
+            dockerfile: Dockerfile.dev
         ports:
             - 3000:3000
+        volumes:
+            - ./client:/client
         stdin_open: true
